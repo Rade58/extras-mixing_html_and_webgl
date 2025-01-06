@@ -1,0 +1,137 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* allowing overflow becaause we want scrolling */
+/* html, body {
+  overflow: hidden;
+} */
+
+/* we set our canvs background to be transparent */
+/* we will set background color */
+html {
+  background: #1e1a20;
+}
+
+/* does nothing in terms of fixing mobile when adressbar gets hidden */
+/* html, body {
+  min-height: 100lvh;
+}
+ */
+canvas.webgl {
+  position: fixed;
+  top: 0;
+  left: 0;
+  outline: none;
+  /* z-index: 50; */
+
+  /* w don't need this */
+  /* height: 100lvh; */
+  /* width: 100vw; */
+}
+
+/* this section won't be scrollable */
+/* body will be scrollable instead, so I'm not using this anymore */
+/* section.content { */
+  /* border: crimson solid 4px; */
+  /* position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  box-sizing: border-box; */
+/* } */
+
+/* body is scrollable and will have nested .content section */
+/* divs inside section will be like "pages" of our content, taking height of the screen */
+section.content div {
+  width: 100%;
+  /* height: 100svh; */
+  height: 100lvh;
+  /* border-top: crimson solid 1px; */
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: row;
+  /* justify-content: center; */
+  align-items: center;
+  font-weight: 500;
+  font-size: 5rem;
+  color: blanchedalmond;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  /*  */
+  /* z-index: 200; */
+  position: relative;
+
+  /*  */
+  text-transform: uppercase;
+
+}
+
+section.content div.show_border {
+  border-bottom: crimson solid 1px;
+
+}
+
+
+
+section.content div:nth-of-type(2n){
+  justify-content: right;
+  padding-right: 3rem;
+  z-index: -200;
+}
+section.content div:nth-of-type(2n + 1){
+  justify-content: left;
+  padding-left: 3rem;
+  z-index: 200;
+}
+
+/* section.content { */
+  /* position: relative; */
+  /* z-index: 200; */
+/* } */
+
+
+/* .loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 5px;
+  background: #1e1a20;
+  z-index: 100;
+  outline: none;
+} */
+
+html {
+  /* I used css custom property in this example 
+  author of the workshop didn't */
+  --progress: 0;
+}
+
+.loading-bar {
+  position: absolute;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: #ffffff;
+
+  transform: scaleX(var(--progress));
+  transform-origin: top left;
+
+  transition-property: transform /* visibility opacity */;
+  transition-duration: 500ms;
+
+  /* for better performance */
+  will-change: transform;
+
+}
+
+.loading-bar.ended {
+  transform: scaleX(0);
+  transition-timing-function: ease-in-out;
+  transition-duration: 1.5s;
+  transition-property: transform;
+  transform-origin: 100% 0;
+}
