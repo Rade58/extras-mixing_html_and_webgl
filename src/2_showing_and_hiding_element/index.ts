@@ -12,6 +12,9 @@ import overlayFragmentShader from "./overlay/fragment.glsl";
 
 // Showing and hiding elemnt
 
+// We are going to use Raycaster like it is mentioned in
+// repo README
+
 // ------------ gui -------------------
 /**
  * @description Debug UI - lil-ui
