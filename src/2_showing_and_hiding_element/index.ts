@@ -10,23 +10,7 @@ import { GLTFLoader, RGBELoader } from "three/examples/jsm/Addons.js";
 import overlayVertexShader from "./overlay/vertex.glsl";
 import overlayFragmentShader from "./overlay/fragment.glsl";
 
-// -------------------------------------------------------------
-// Storing the points
-
-// we will have array of objects with each
-// object corresponding to one point
-
-// Each point objecy will have two properties
-// - the 3D position
-// - a reference to the HTML element
-
-// look for "Point Objects" in the code to see what
-// I've done
-
-// -------------------------------------------------------------
-// Updating the points
-
-// update the points elemnts on each frame in the tick function
+// Showing and hiding elemnt
 
 // ------------ gui -------------------
 /**
