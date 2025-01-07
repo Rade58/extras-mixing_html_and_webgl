@@ -34,8 +34,8 @@ canvas.webgl {
 /* this section won't be scrollable */
 /* body will be scrollable instead, so I'm not using this anymore */
 /* section.content { */
-  /* border: crimson solid 4px; */
-  /* position: fixed;
+/* border: crimson solid 4px; */
+/* position: fixed;
   top: 0;
   bottom: 0;
   left: 0;
@@ -59,39 +59,35 @@ section.content div {
   font-weight: 500;
   font-size: 5rem;
   color: blanchedalmond;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   /*  */
   /* z-index: 200; */
   position: relative;
 
   /*  */
   text-transform: uppercase;
-
 }
 
 section.content div.show_border {
   border-bottom: crimson solid 1px;
-
 }
 
-
-
-section.content div:nth-of-type(2n){
+section.content div:nth-of-type(2n) {
   justify-content: right;
   padding-right: 3rem;
   z-index: -200;
 }
-section.content div:nth-of-type(2n + 1){
+section.content div:nth-of-type(2n + 1) {
   justify-content: left;
   padding-left: 3rem;
   z-index: 200;
 }
 
 /* section.content { */
-  /* position: relative; */
-  /* z-index: 200; */
+/* position: relative; */
+/* z-index: 200; */
 /* } */
-
 
 /* .loading-bar {
   position: fixed;
@@ -125,7 +121,6 @@ html {
 
   /* for better performance */
   will-change: transform;
-
 }
 
 .loading-bar.ended {
@@ -134,4 +129,78 @@ html {
   transition-duration: 1.5s;
   transition-property: transform;
   transform-origin: 100% 0;
+}
+
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+/* --------------------------------------------------- */
+/* From current workshop (HTML together with WebGL) */
+.point {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+}
+
+.point:hover .text {
+  opacity: 1;
+}
+
+.point .label {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #00000077;
+  /* background: red; */
+  border: 1px solid #ffffff77;
+  color: #ffffff;
+  font-family: Helvetica, Arial, sans-serif;
+  text-align: center;
+  line-height: 40px;
+  font-weight: 100;
+  font-size: 14px;
+  /* -------- */
+  cursor: help;
+
+  /* not visible initially */
+  transform: scale(0, 0);
+  /* transform: scale(0.001, 0.001); */
+  transition: transform 0.3s;
+}
+
+/* we will make it visible with javascript only */
+/* when that spot on the model is visible */
+/* if model is rotated that way that spot is on the other side
+so we can see it, it will be invisible */
+/* we will define ofcourse in javascript when we will add .visible class
+and when to remove it */
+
+.point.visible .label {
+  transform: scale(1, 1);
+}
+
+.point .text {
+  position: absolute;
+  top: 30px;
+  left: -120px;
+  width: 200px;
+  padding: 20px;
+  border-radius: 4px;
+  background: #00000077;
+  border: 1px solid #ffffff77;
+  color: #ffffff;
+  line-height: 1.3em;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 100;
+  font-size: 14px;
+  /* ---------- */
+  opacity: 0;
+
+  transition: opacity 0.3s;
+
+  pointer-events: none;
 }
