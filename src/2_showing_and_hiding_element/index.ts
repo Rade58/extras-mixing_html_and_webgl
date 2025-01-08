@@ -631,18 +631,30 @@ if (canvas) {
         const intersects = raycaster.intersectObjects(modelChildren, true);
 
         if (_point.element) {
-          const contains = _point.element.classList.contains("visible");
-          console.log({ contains });
+          // const contains = _point.element.classList.contains("visible");
           // this next statement condition not good enough
-          // we also need to handle edge case which is anoying
-          // it is easier to see how anoying it is
-          // than to explain it
+          // we also need to handle edge case
+          // that is easier to spot after you rotate
+          // camera with orbit controls, than to explain
+          // edge case needs only to be handled in esle statment
           if (intersects.length === 0) {
-            if (!contains) {
-              _point.element.classList.add("visible");
-            }
+            _point.element.classList.add("visible");
           } else {
-            if (contains) {
+            // we need distance to the intersection
+            // between camera and model child (but only first elemnt
+            // because it is the array of interection with every child
+            // welll, we only need closest intersected which is 0)
+            const intersectionDistance = intersects[0].distance;
+
+            // but we also need the distance of the point (html elemnt)
+            // we want to hide
+            // we need distance from the camera to that point
+
+            const distancePointToCamera = _point.position.distanceTo(
+              camera.position
+            );
+
+            if (distancePointToCamera > intersectionDistance) {
               _point.element.classList.remove("visible");
             }
           }
