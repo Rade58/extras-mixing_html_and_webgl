@@ -4,7 +4,7 @@ import GUI from "lil-gui";
 
 import { gsap } from "gsap";
 
-import { OrbitControls } from "three/examples/jsm/Addons.js";
+import { GLTF, OrbitControls } from "three/examples/jsm/Addons.js";
 import { GLTFLoader, RGBELoader } from "three/examples/jsm/Addons.js";
 
 import overlayVertexShader from "./overlay/vertex.glsl";
@@ -14,6 +14,20 @@ import overlayFragmentShader from "./overlay/fragment.glsl";
 
 // We are going to use Raycaster like it is mentioned in
 // repo README
+
+// Basically we will shoot a ray to the points
+// if we hit model first, this means point is behind the model
+// and we can hide the html element related to the point
+
+// basically we will have two "lines" if one line is longer
+// that will determine if we will show or hide the point
+
+// if the line from the camera to the point is longer than
+// the line from the camera to the model, we will hide the point
+
+// in tick function , we update Raycaster, so it goes
+// from the camera to the point
+// we use setFromCamera method for that
 
 // ------------ gui -------------------
 /**
@@ -184,10 +198,13 @@ if (canvas) {
    * @name PointObjects
    */
 
+  const raycaster = new THREE.Raycaster();
+
   const points: { position: THREE.Vector3; element: HTMLDivElement | null }[] =
     [
       {
-        position: new THREE.Vector3(1.55, 0.3, -0.6),
+        // position: new THREE.Vector3(1.55, 0.3, -0.6),
+        position: new THREE.Vector3(2, 0.5, -0.2),
         element: document.querySelector(".point-0"),
       },
     ];
@@ -284,6 +301,8 @@ if (canvas) {
   //------------------------------------------------
   // ----------    ENVIRONMENT MAP
 
+  let modelChildren: THREE.Object3D[] = [];
+
   // we write this
 
   /**
@@ -298,6 +317,8 @@ if (canvas) {
 
       gltfLoader.load("/models/cyber_helmet/cyber_helmet.glb", (gltf) => {
         console.log("model loaded");
+        modelChildren = gltf.scene.children;
+
         gltf.scene.scale.setScalar(10);
         gltf.scene.position.y = -1;
 
@@ -522,13 +543,13 @@ if (canvas) {
     }
   });
 
-  const mouse = new THREE.Vector2();
+  /*  const mouse = new THREE.Vector2();
   window.addEventListener("mousemove", (_event) => {
     mouse.x = (_event.clientX / sizes.width) * 2 - 1;
     mouse.y = -(_event.clientY / sizes.height) * 2 + 1;
 
     // console.log({ mouse });
-  });
+  }); */
 
   /* window.addEventListener("dblclick", () => {
     console.log("double click");
@@ -577,12 +598,62 @@ if (canvas) {
     // for dumping to work
     orbit_controls.update();
 
+    // did this i nprevious lesson
     // we need to get 2d screen position of 3d scene
     // position of the points
     for (const _point of points) {
       const screenPosition = _point.position.clone();
       screenPosition.project(camera);
 
+      // ---------------------------------------------
+      // ---------------------------------------------
+      // we tell raycaster where is the point
+      // the point we picked
+      //
+      raycaster.setFromCamera(
+        // I think we can pass screenPosition Vector3 directly
+        // but for the sake of type checking I did it like this
+        // but I changed my mind since I don't want to make more instances
+        // than I should
+        // new THREE.Vector2(screenPosition.x, screenPosition.y),
+        // @ts-expect-error you can pass Vector3 instead of Vector2
+        screenPosition,
+        camera
+      );
+      // we tell raycaster to shoot the ray finally
+
+      // and we test it if it will intersect
+      // the model
+      // but model consists of many object so we need to test
+      // every object
+      if (modelChildren) {
+        // recursive true because we are testing children of the childre and so on
+        const intersects = raycaster.intersectObjects(modelChildren, true);
+
+        if (_point.element) {
+          const contains = _point.element.classList.contains("visible");
+          console.log({ contains });
+          // this next statement condition not good enough
+          // we also need to handle edge case which is anoying
+          // it is easier to see how anoying it is
+          // than to explain it
+          if (intersects.length === 0) {
+            if (!contains) {
+              _point.element.classList.add("visible");
+            }
+          } else {
+            if (contains) {
+              _point.element.classList.remove("visible");
+            }
+          }
+        }
+      }
+
+      // ---------------------------------------------
+      // ---------------------------------------------
+      // ---------------------------------------------
+
+      // did this in previous lesson
       // goes from 0 to 1
       // left bottom is 0,0 and right top is 1,1
       // console.log(screenPosition.x, screenPosition.y);
@@ -590,7 +661,6 @@ if (canvas) {
       // we need to normalize them so
       // they go from -1 to 1
       // where 0,0 is the center of the screen
-
       const x = screenPosition.x * sizes.width * 0.5;
       const y = -screenPosition.y * sizes.height * 0.5;
       // console.log({ x, y });
@@ -599,6 +669,14 @@ if (canvas) {
         _point.element.style.transform = `translateX(${x}px) translateY(${y}px)`;
       }
     }
+
+    // has nothing to do whith what we did, I'm just pointing it out:
+    // we already had mouse Vector2 from mousemove event
+    // we set when we delt with raycaster in some
+    // previous workshop but we don't need it here
+    // you can also comment that mousemove code
+    // because we already have screenPosition Vector2
+    // raycaster.setFromCamera(mouse, camera);
 
     renderer.render(scene, camera);
 
