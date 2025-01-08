@@ -204,3 +204,14 @@ and when to remove it */
 
   pointer-events: none;
 }
+
+/* ----------- something I added as a part of last lesson ------------- */
+
+/* not needed after all */
+/* .test-hide {
+  visibility: hidden;
+}
+
+.test-show {
+  visibility: visible;
+} */

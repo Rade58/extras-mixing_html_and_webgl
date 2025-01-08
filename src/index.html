@@ -15,17 +15,48 @@
 
   <div class="loading-bar"></div>
 
-  <!-- for testing purposes we use visible -->
-  <!-- <div class="point point-0 visible"> -->
-  <!-- normaly it is hidden -->
-  <div class="point point-0">
-    <div class="label">1</div>
+  <!-- this will be our helper object -->
+  <!-- will be hidden with gui by default -->
+  <!-- not using point-test class, just marking it here that iyt is test -->
+  <div style="visibility: hidden;" class="point point-0 point-test">
+    <div class="label">T</div>
     <div class="text">
       Lorem ipsum dolor sit amet, consectetur adipiscing elit
     </div>
   </div>
 
 
+
+  <!-- for testing purposes we use visible -->
+  <!-- <div class="point point-0 visible"> -->
+  <!-- normaly it is hidden -->
+  <div class="point point-1">
+    <div class="label">1</div>
+    <div class="text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    </div>
+  </div>
+
+  <!-- added this points after successfull moving point 0 with gui -->
+
+  <div class="point point-2">
+    <div class="label">2</div>
+    <div class="text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    </div>
+  </div>
+
+  <div class="point point-3">
+    <div class="label">3</div>
+    <div class="text">
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    </div>
+  </div>
+
+  <!-- ---------------------------------------------------------- -->
+  <!-- ---------------------------------------------------------- -->
+  <!-- ---------------------------------------------------------- -->
+  <!-- ---------------------------------------------------------- -->
 
   <!-- 0 - Setup (last lesson of "into and loading" workshop ) -->
   <!-- I removed all post processing code (to be lighter) -->
@@ -35,7 +66,10 @@
   <!-- <script type="module" src="/1_storing_n_updating_the_points/index.ts"></script> -->
 
   <!-- 2 -->
-  <script type="module" src="/2_showing_and_hiding_element/index.ts"></script>
+  <!-- <script type="module" src="/2_showing_and_hiding_element/index.ts"></script> -->
+
+  <!-- 3 -->
+  <script type="module" src="/3_adding_more_points_and_gui/index.ts"></script>
 
 
 </body>
