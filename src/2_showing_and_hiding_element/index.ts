@@ -142,14 +142,18 @@ if (canvas) {
    * @description loaders and LoadingManager
    */
 
+  let sceneReady = false;
+
   const loadingManager = new THREE.LoadingManager(
     () => {
+      // similar to setTimeout
       gsap.delayedCall(0.5, () => {
         if (loading_bar) {
           loading_bar.classList.add("ended");
 
           loading_bar.style.transform = "";
           gsap.to(overlayMaterial.uniforms.uAlpha, { value: 0, duration: 3 });
+          sceneReady = true;
         }
       });
 
@@ -598,87 +602,100 @@ if (canvas) {
     // for dumping to work
     orbit_controls.update();
 
-    // did this i nprevious lesson
-    // we need to get 2d screen position of 3d scene
-    // position of the points
-    for (const _point of points) {
-      const screenPosition = _point.position.clone();
-      screenPosition.project(camera);
+    // case if scene isn't ready or scene doesn't have
+    // loaded model we won't do the loop
 
-      // ---------------------------------------------
-      // ---------------------------------------------
-      // we tell raycaster where is the point
-      // the point we picked
-      //
-      raycaster.setFromCamera(
-        // I think we can pass screenPosition Vector3 directly
-        // but for the sake of type checking I did it like this
-        // but I changed my mind since I don't want to make more instances
-        // than I should
-        // new THREE.Vector2(screenPosition.x, screenPosition.y),
-        // @ts-expect-error you can pass Vector3 instead of Vector2
-        screenPosition,
-        camera
-      );
-      // we tell raycaster to shoot the ray finally
+    // with sceneReady we are covering the case
+    // where point is visible at the beggining
+    // well we don't want point to be visible together with
+    // overlay and loader
+    if (sceneReady && modelChildren) {
+      // did this i nprevious lesson
+      // we need to get 2d screen position of 3d scene
+      // position of the points
+      for (const _point of points) {
+        const screenPosition = _point.position.clone();
+        screenPosition.project(camera);
 
-      // and we test it if it will intersect
-      // the model
-      // but model consists of many object so we need to test
-      // every object
-      if (modelChildren) {
-        // recursive true because we are testing children of the childre and so on
-        const intersects = raycaster.intersectObjects(modelChildren, true);
+        // ---------------------------------------------
+        // ---------------------------------------------
+        // we tell raycaster where is the point
+        // the point we picked
+        //
+        raycaster.setFromCamera(
+          // I think we can pass screenPosition Vector3 directly
+          // but for the sake of type checking I did it like this
+          // but I changed my mind since I don't want to make more instances
+          // than I should
+          // new THREE.Vector2(screenPosition.x, screenPosition.y),
+          // @ts-expect-error you can pass Vector3 instead of Vector2
+          screenPosition,
+          camera
+        );
+        // we tell raycaster to shoot the ray finally
 
-        if (_point.element) {
-          // const contains = _point.element.classList.contains("visible");
-          // this next statement condition not good enough
-          // we also need to handle edge case
-          // that is easier to spot after you rotate
-          // camera with orbit controls, than to explain
-          // edge case needs only to be handled in esle statment
-          if (intersects.length === 0) {
-            _point.element.classList.add("visible");
-          } else {
-            // we need distance to the intersection
-            // between camera and model child (but only first elemnt
-            // because it is the array of interection with every child
-            // welll, we only need closest intersected which is 0)
-            const intersectionDistance = intersects[0].distance;
+        // and we test it if it will intersect
+        // the model
+        // but model consists of many object so we need to test
+        // every object
+        if (modelChildren) {
+          // recursive true because we are testing children of the childre and so on
+          const intersects = raycaster.intersectObjects(modelChildren, true);
 
-            // but we also need the distance of the point (html elemnt)
-            // we want to hide
-            // we need distance from the camera to that point
+          if (_point.element) {
+            // this next statement condition not good enough
+            // we also need to handle edge case
+            // that is easier to spot after you rotate
+            // camera with orbit controls, than to explain
+            // edge case needs only to be handled in esle statment
+            if (intersects.length === 0) {
+              _point.element.classList.add("visible");
+            } else {
+              // we need distance to the intersection
+              // between camera and model child (but only first elemnt
+              // because it is the array of interection with every child
+              // welll, we only need closest intersected which is 0)
+              const intersectionDistance = intersects[0].distance;
 
-            const distancePointToCamera = _point.position.distanceTo(
-              camera.position
-            );
+              // but we also need the distance of the point (html elemnt)
+              // we want to hide
+              // we need distance from the camera to that point
 
-            if (distancePointToCamera > intersectionDistance) {
-              _point.element.classList.remove("visible");
+              const distancePointToCamera = _point.position.distanceTo(
+                camera.position
+              );
+
+              if (distancePointToCamera > intersectionDistance) {
+                _point.element.classList.remove("visible");
+              }
+              // no idea why, but author aded else statement here
+              // I think it works without it also
+              else {
+                _point.element.classList.add("visible");
+              }
             }
           }
         }
-      }
 
-      // ---------------------------------------------
-      // ---------------------------------------------
-      // ---------------------------------------------
+        // ---------------------------------------------
+        // ---------------------------------------------
+        // ---------------------------------------------
 
-      // did this in previous lesson
-      // goes from 0 to 1
-      // left bottom is 0,0 and right top is 1,1
-      // console.log(screenPosition.x, screenPosition.y);
+        // did this in previous lesson
+        // goes from 0 to 1
+        // left bottom is 0,0 and right top is 1,1
+        // console.log(screenPosition.x, screenPosition.y);
 
-      // we need to normalize them so
-      // they go from -1 to 1
-      // where 0,0 is the center of the screen
-      const x = screenPosition.x * sizes.width * 0.5;
-      const y = -screenPosition.y * sizes.height * 0.5;
-      // console.log({ x, y });
+        // we need to normalize them so
+        // they go from -1 to 1
+        // where 0,0 is the center of the screen
+        const x = screenPosition.x * sizes.width * 0.5;
+        const y = -screenPosition.y * sizes.height * 0.5;
+        // console.log({ x, y });
 
-      if (_point.element) {
-        _point.element.style.transform = `translateX(${x}px) translateY(${y}px)`;
+        if (_point.element) {
+          _point.element.style.transform = `translateX(${x}px) translateY(${y}px)`;
+        }
       }
     }
 
